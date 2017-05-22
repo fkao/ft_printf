@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/15 14:19:29 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 14:12:43 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/22 16:26:20 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	pf_wide_characters(t_attr *mod, va_list ap)
 		tmp++;
 	}
 	pf_width_correction(mod);
-	ft_putwstr(mod->wstr, mod->dot);
+	ft_putwstr(mod->wstr, mod->count);
 	pf_put_left(mod);
 }
 
