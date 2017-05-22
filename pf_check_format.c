@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/11 19:00:56 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 14:24:26 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/22 16:30:57 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,8 +139,7 @@ void	pf_width_correction(t_attr *mod)
 			mod->count = mod->dot;
 			mod->str = ft_strsub(mod->str, 0, mod->dot);
 		}
-		if (mod->spec != 's')
-			mod->dot = 0;
+		mod->dot = 0;
 		pf_put_width(mod);
 	}
 }
