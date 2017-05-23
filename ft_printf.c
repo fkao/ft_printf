@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:12:30 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 19:19:14 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/22 19:21:22 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ void	pf_print_unsigned(t_attr *mod, va_list ap)
 void	pf_print_singlechar(t_attr *mod, va_list ap)
 {
 	wchar_t	wchr;
-	if (mod->length == 'l' && mod->spec == 'c')
+	if (mod->length == 'l' && mod->spec == 'c' && MB_CUR_MAX == 1)
 	{
 		wchr = (wchar_t)va_arg(ap, wint_t);
-		if (wchr <= 0x7F && MB_CUR_MAX == 1)
+		if (wchr <= 0x7F)
 			mod->count = 1;
 		else if (wchr <= 0x7FF)
 			mod->count = 2;
