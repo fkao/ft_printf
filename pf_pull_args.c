@@ -6,11 +6,12 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/15 14:19:29 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 16:26:20 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/22 16:56:39 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include <stdlib.h>
 
 t_attr	*pf_signed_conversion(t_attr *mod, va_list ap)
 {
@@ -60,6 +61,8 @@ t_attr	*pf_unsigned_convs(t_attr *mod, va_list ap)
 		else if (!mod->length)
 			mod->unlo = (unsigned long)va_arg(ap, unsigned int);
 	}
+	if (mod->spec == 'p')
+		mod->unlo = (uintmax_t)va_arg(ap, void*);
 	return (mod);
 }
 

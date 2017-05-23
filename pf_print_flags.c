@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/16 10:20:45 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 15:12:39 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/22 17:00:14 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ void	pf_put_hash(t_attr *mod)
 		}
 	}
 	pf_put_width(mod);
+	if (mod->spec == 'p')
+		write(1, "0x", 2);
 	pf_put_dot(mod);
 }
 

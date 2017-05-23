@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:12:30 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 14:33:05 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/22 16:56:51 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ void	pf_print_unsigned(t_attr *mod, va_list ap)
 	}
 	if (mod->spec == 's')
 		mod->str = va_arg(ap, char*);
+	if (mod->spec == 'p')
+		mod->str = ft_ultoa_base(mod->unlo, 16);
 	mod->count = ft_strlen(mod->str);
 	pf_width_correction(mod);
 	ft_putstr(mod->str);
@@ -88,7 +90,8 @@ t_attr	*pf_print_specifiers(char *fmt, va_list ap)
 	}
 	if (mod->spec == '%' || mod->spec == 'c')
 		pf_print_singlechar(mod, ap);
-	if (mod->spec == 'u' || mod->spec == 'o' || mod->spec == 'x')
+	if (mod->spec == 'u' || mod->spec == 'o' || mod->spec == 'x' ||
+		mod->spec == 'p')
 		pf_print_unsigned(mod, ap);
 	return (mod);
 }

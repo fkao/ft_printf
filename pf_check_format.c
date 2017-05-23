@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/11 19:00:56 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 16:30:57 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/22 16:55:15 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,11 +124,11 @@ void	pf_width_correction(t_attr *mod)
 			mod->width -= 1;
 		pf_put_sign(mod);
 	}
-	if (mod->spec == 'o' || mod->spec == 'x')
+	if (mod->spec == 'o' || mod->spec == 'x' || mod->spec == 'p' )
 	{
 		if (mod->spec == 'o' && mod->hash && mod->unlo)
 			mod->width -= 1;
-		if (mod->spec == 'x' && mod->hash && mod->unlo)
+		if ((mod->spec == 'x' && mod->hash && mod->unlo) || mod->spec == 'p')
 			mod->width -= 2;
 		pf_put_hash(mod);
 	}
