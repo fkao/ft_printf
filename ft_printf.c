@@ -6,13 +6,12 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:12:30 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 19:06:44 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/22 19:13:31 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include <unistd.h>
-#include <stdlib.h>
 
 void	pf_print_unsigned(t_attr *mod, va_list ap)
 {
@@ -44,30 +43,30 @@ void	pf_print_unsigned(t_attr *mod, va_list ap)
 
 void	pf_print_singlechar(t_attr *mod, va_list ap)
 {
-	wchar_t	wchr;
-
 	if (mod->length == 'l' && mod->spec == 'c')
 	{
-		wchr = (wchar_t)va_arg(ap, wint_t);
-		if (wchr <= 0x7F && MB_CUR_MAX == 1)
+		mod->wchr = (wchar_t)va_arg(ap, wint_t);
+		if (mod->wchr <= 0x7F)
 			mod->count = 1;
-		else if (wchr <= 0x7FF)
+		else if (mod->wchr <= 0x7FF)
 			mod->count = 2;
-		else if (wchr <= 0xFFFF)
+		else if (mod->wchr <= 0xFFFF)
 			mod->count = 3;
-		else if (wchr <= 0x10FFFF)
+		else if (mod->wchr <= 0x10FFFF)
 			mod->count = 4;
+		pf_width_correction(mod);
+		ft_putwchar(mod->wchr);
 	}
 	else
 	{
 		if (mod->spec == 'c')
-			wchr = (char)va_arg(ap, int);
+			mod->chr = (char)va_arg(ap, int);
 		if (mod->spec == '%')
-			wchr = '%';
+			mod->chr = '%';
 		mod->count = 1;
+		pf_width_correction(mod);
+		ft_putchar(mod->chr);
 	}
-	pf_width_correction(mod);
-	ft_putwchar(wchr);
 	pf_put_left(mod);
 }
 
