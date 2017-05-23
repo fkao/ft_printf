@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:05:46 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 18:19:28 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/22 18:33:13 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@ typedef struct		s_attr
 	int				caps;
 	long			nbr;
 	unsigned long	unlo;
-	wchar_t			wchr;
-	wchar_t			*wstr;
 }					t_attr;
 
 int					ft_printf(const char *format, ...);
