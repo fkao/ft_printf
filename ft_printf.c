@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:12:30 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 19:42:06 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/23 10:21:02 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,7 @@ int		ft_printf(const char *format, ...)
 				i++;
 			tmp = ft_strsub(format, 0, i + 1);
 			pf_print_nospec(tmp, ap);
+			ft_strdel(&tmp);
 			format += i;
 		}
 		else

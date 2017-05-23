@@ -6,7 +6,7 @@
 #    By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/08 12:21:04 by fkao              #+#    #+#              #
-#    Updated: 2017/05/18 16:19:25 by fkao             ###   ########.fr        #
+#    Updated: 2017/05/23 11:30:47 by fkao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,8 @@ OBJ		= $(SRC:.c=.o) $(LIB:.c=.o)
 LIB		= ft_atoi.c ft_countint.c ft_isdigit.c ft_isupper.c ft_memalloc.c \
 			ft_putchar.c ft_putstr.c ft_strlen.c ft_strnew.c ft_strsub.c \
 			ft_toabsl.c ft_tolower.c ft_toupper.c ft_bzero.c ft_isspace.c \
-			ft_putchar_fd.c ft_putstr_fd.c ft_strncpy.c ft_memset.c
+			ft_putchar_fd.c ft_putstr_fd.c ft_strncpy.c ft_memset.c \
+			ft_memdel.c ft_strdel.c
 LDIR	= ./libft/
 LSRC	= $(addprefix $(LDIR), $(LIB))
 
