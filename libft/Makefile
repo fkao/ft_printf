@@ -6,7 +6,7 @@
 #    By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/02/27 11:19:09 by fkao              #+#    #+#              #
-#    Updated: 2017/05/18 18:05:59 by fkao             ###   ########.fr        #
+#    Updated: 2017/05/23 11:57:25 by fkao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,17 +34,16 @@ ft_putchar.c ft_putchar_fd.c ft_putendl.c ft_putendl_fd.c ft_putnbr.c \
 OBJ		= $(addprefix $(ODIR), $(SRC:.c=.o))
 ODIR	= obj/
 
-CC		= gcc
 FLAG	= -Wall -Wextra -Werror
 RM		= rm -rf
 
 all: $(NAME)
 
+$(ODIR)%.o: %.c
+	@gcc $(FLAG) $(INCL) -c $< -o $@
+
 ofile:
 	@mkdir -p $(ODIR)
-
-$(ODIR)%.o: %.c
-	@$(CC) $(FLAG) $(INCL) -c $< -o $@
 
 $(NAME): ofile $(OBJ)
 	@ar rc $(NAME) $(OBJ)
