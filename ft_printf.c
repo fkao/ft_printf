@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:12:30 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 19:35:26 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/22 19:42:06 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,11 @@ void	pf_print_unsigned(t_attr *mod, va_list ap)
 void	pf_print_singlechar(t_attr *mod, va_list ap)
 {
 	wchar_t	wchr;
-	if (mod->spec == 'c')
+
+	if (mod->length == 'l' && mod->spec == 'c' && MB_CUR_MAX != 1)
 	{
 		wchr = (wchar_t)va_arg(ap, wint_t);
-		if (wchr <= (MB_CUR_MAX == 1 ? 0xFF : 0x7F))
+		if (wchr <= 0x7F)
 			mod->count = 1;
 		else if (wchr <= 0x7FF)
 			mod->count = 2;
@@ -57,9 +58,12 @@ void	pf_print_singlechar(t_attr *mod, va_list ap)
 		else if (wchr <= 0x10FFFF)
 			mod->count = 4;
 	}
-	else if (mod->spec == '%')
+	else
 	{
-		wchr = '%';
+		if (mod->spec == 'c')
+			wchr = (char)va_arg(ap, int);
+		if (mod->spec == '%')
+			wchr = '%';
 		mod->count = 1;
 	}
 	pf_width_correction(mod);
