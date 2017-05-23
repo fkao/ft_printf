@@ -6,12 +6,13 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:12:30 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 18:21:54 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/22 19:06:44 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include <unistd.h>
+#include <stdlib.h>
 
 void	pf_print_unsigned(t_attr *mod, va_list ap)
 {
@@ -48,7 +49,7 @@ void	pf_print_singlechar(t_attr *mod, va_list ap)
 	if (mod->length == 'l' && mod->spec == 'c')
 	{
 		wchr = (wchar_t)va_arg(ap, wint_t);
-		if (wchr <= 0x7F)
+		if (wchr <= 0x7F && MB_CUR_MAX == 1)
 			mod->count = 1;
 		else if (wchr <= 0x7FF)
 			mod->count = 2;
