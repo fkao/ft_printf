@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/15 14:19:29 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 16:56:39 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/22 18:21:03 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,11 @@ t_attr	*pf_unsigned_convs(t_attr *mod, va_list ap)
 
 void	pf_wide_characters(t_attr *mod, va_list ap)
 {
+	wchar_t	*wstr;
 	wchar_t	*tmp;
 
-	mod->wstr = va_arg(ap, wchar_t*);
-	tmp = mod->wstr;
+	wstr = va_arg(ap, wchar_t*);
+	tmp = wstr;
 	while (*tmp)
 	{
 		if (*tmp <= 0x7F)
@@ -85,7 +86,7 @@ void	pf_wide_characters(t_attr *mod, va_list ap)
 		tmp++;
 	}
 	pf_width_correction(mod);
-	ft_putwstr(mod->wstr, mod->count);
+	ft_putwstr(wstr, mod->count);
 	pf_put_left(mod);
 }
 
