@@ -6,12 +6,11 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/15 14:19:29 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/22 19:10:39 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/22 19:17:59 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdlib.h>
 
 t_attr	*pf_signed_conversion(t_attr *mod, va_list ap)
 {
@@ -112,7 +111,7 @@ void	ft_putwstr(wchar_t *str, size_t len)
 
 void	ft_putwchar(wchar_t chr)
 {
-	if (chr <= 0x7F && MB_CUR_MAX == 1)
+	if (chr <= 0x7F)
 		ft_putchar(chr);
 	else if (chr <= 0x7FF)
 	{
