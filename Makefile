@@ -6,7 +6,7 @@
 #    By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/08 12:21:04 by fkao              #+#    #+#              #
-#    Updated: 2017/05/23 11:56:28 by fkao             ###   ########.fr        #
+#    Updated: 2017/05/24 15:05:43 by fkao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,7 @@ SFILE	= ft_printf.c \
 			pf_check_format.c \
 			pf_print_flags.c \
 			pf_pull_args.c \
+			pf_put_retint.c \
 			pf_tools.c
 SRC		= $(addprefix $(SDIR), $(SFILE))
 SDIR	= ./

@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:12:30 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/23 10:21:02 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/30 19:45:52 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,103 +14,94 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-void	pf_print_unsigned(t_attr *mod, va_list ap)
-{
-	char	*tmp;
+t_attr	g_attr;
 
-	if (mod->spec == 'u')
-		mod->str = ft_ultoa_base(mod->unlo, 10);
-	if (mod->spec == 'o')
-		mod->str = ft_ultoa_base(mod->unlo, 8);
-	if (mod->spec == 'x')
+void	pf_print_unsigned(va_list ap)
+{
+	if (g_attr.spec == 'u')
+		g_attr.str = ft_ultoa_base(g_attr.unlo, 10);
+	if (g_attr.spec == 'o')
+		g_attr.str = ft_ultoa_base(g_attr.unlo, 8);
+	if (g_attr.spec == 'x' || g_attr.spec == 'p')
+		g_attr.str = ft_ultoa_base(g_attr.unlo, 16);
+	if (g_attr.spec == 's')
 	{
-		mod->str = ft_ultoa_base(mod->unlo, 16);
-		if (mod->caps && (tmp = mod->str))
-			while (*tmp)
-			{
-				*tmp = ft_toupper(*tmp);
-				tmp++;
-			}
+		g_attr.str = va_arg(ap, char*);
+		if (g_attr.str == NULL)
+			g_attr.str = "(null)";
 	}
-	if (mod->spec == 's')
-		mod->str = va_arg(ap, char*);
-	if (mod->spec == 'p')
-		mod->str = ft_ultoa_base(mod->unlo, 16);
-	mod->count = ft_strlen(mod->str);
-	pf_width_correction(mod);
-	ft_putstr(mod->str);
-	pf_put_left(mod);
+	g_attr.count = (g_attr.prec && !g_attr.nbr) ? 0 : ft_strlen(g_attr.str);
+	pf_width_correction();
+	if (!g_attr.prec || g_attr.nbr)
+		retint_putstr(g_attr.str);
+	pf_put_left();
 }
 
-void	pf_print_singlechar(t_attr *mod, va_list ap)
+void	pf_print_singlechar(va_list ap)
 {
 	wchar_t	wchr;
 
-	if (mod->length == 'l' && mod->spec == 'c' && MB_CUR_MAX != 1)
+	if (g_attr.length == 'l' && g_attr.spec == 'c' && MB_CUR_MAX != 1)
 	{
 		wchr = (wchar_t)va_arg(ap, wint_t);
 		if (wchr <= 0x7F)
-			mod->count = 1;
+			g_attr.count = 1;
 		else if (wchr <= 0x7FF)
-			mod->count = 2;
+			g_attr.count = 2;
 		else if (wchr <= 0xFFFF)
-			mod->count = 3;
+			g_attr.count = 3;
 		else if (wchr <= 0x10FFFF)
-			mod->count = 4;
+			g_attr.count = 4;
 	}
 	else
 	{
-		if (mod->spec == 'c')
+		if (g_attr.spec == 'c')
 			wchr = (char)va_arg(ap, int);
-		if (mod->spec == '%')
+		if (g_attr.spec == '%')
 			wchr = '%';
-		mod->count = 1;
+		g_attr.count = 1;
 	}
-	pf_width_correction(mod);
-	ft_putwchar(wchr);
-	pf_put_left(mod);
+	pf_width_correction();
+	retint_putwchar(wchr);
+	pf_put_left();
 }
 
-t_attr	*pf_print_specifiers(char *fmt, va_list ap)
+void	pf_print_specifiers(char *fmt, va_list ap)
 {
-	t_attr	*mod;
-
-	mod = pf_organize_length(fmt);
-	mod = pf_unsigned_convs(mod, ap);
-	if (mod->spec == 's')
+	pf_organize_length(fmt);
+	pf_unsigned_convs(ap);
+	if (g_attr.spec == 's')
 	{
-		if (mod->length != 'l')
-			pf_print_unsigned(mod, ap);
-		if (mod->length == 'l')
-			pf_wide_characters(mod, ap);
+		if (g_attr.length != 'l')
+			pf_print_unsigned(ap);
+		if (g_attr.length == 'l')
+			pf_wide_characters(ap);
 	}
-	if (mod->spec == 'd')
+	if (g_attr.spec == 'd')
 	{
-		mod->count = (int)ft_countul_base(ft_toabsl(mod->nbr), 10);
-		pf_width_correction(mod);
-		ft_putnbrul(ft_toabsl(mod->nbr));
-		pf_put_left(mod);
+		g_attr.count = (g_attr.prec && !g_attr.nbr) ? 0 :
+			(int)ft_countul_base(ft_toabsl(g_attr.nbr), 10);
+		pf_width_correction();
+		if (!g_attr.prec || g_attr.nbr)
+			retint_putnbrul(ft_toabsl(g_attr.nbr));
+		pf_put_left();
 	}
-	if (mod->spec == '%' || mod->spec == 'c')
-		pf_print_singlechar(mod, ap);
-	if (mod->spec == 'u' || mod->spec == 'o' || mod->spec == 'x' ||
-		mod->spec == 'p')
-		pf_print_unsigned(mod, ap);
-	return (mod);
+	if (g_attr.spec == '%' || g_attr.spec == 'c')
+		pf_print_singlechar(ap);
+	if (g_attr.spec == 'u' || g_attr.spec == 'o' || g_attr.spec == 'x' ||
+		g_attr.spec == 'p')
+		pf_print_unsigned(ap);
 }
 
 void	pf_print_nospec(char *fmt, va_list ap)
 {
-	t_attr	*mod;
 	char	c;
 	int		i;
 
-	mod = pf_print_specifiers(fmt, ap);
-	if (!mod->spec)
+	pf_print_specifiers(fmt, ap);
+	if (!g_attr.spec)
 	{
-		c = ' ';
-		if (mod->zero)
-			c = '0';
+		c = (g_attr.zero) ? '0' : ' ';
 		while (*fmt)
 		{
 			if (!pf_ismodifier(*fmt))
@@ -118,13 +109,13 @@ void	pf_print_nospec(char *fmt, va_list ap)
 			fmt++;
 		}
 		i = 0;
-		if ((mod->width > 0) && !mod->dash)
-			while (i++ < (mod->width - 1))
-				ft_putchar(c);
-		ft_putchar(*fmt);
-		if ((mod->width > 0) && mod->dash)
-			while (i++ < (mod->width - 1))
-				write(1, " ", 1);
+		if ((g_attr.width > 0) && !g_attr.dash)
+			while (i++ < (g_attr.width - 1))
+				retint_putchar(c);
+		retint_putchar(*fmt);
+		if ((g_attr.width > 0) && g_attr.dash)
+			while (i++ < (g_attr.width - 1))
+				retint_putchar(' ');
 	}
 }
 
@@ -135,23 +126,24 @@ int		ft_printf(const char *format, ...)
 	char	*tmp;
 
 	va_start(ap, format);
+	g_attr.ret = 0;
 	while (*format)
 	{
 		if (*format == '%')
 		{
 			format++;
+			pf_reset_attr();
 			i = 0;
 			while (pf_ismodifier(format[i]))
 				i++;
 			tmp = ft_strsub(format, 0, i + 1);
 			pf_print_nospec(tmp, ap);
-			ft_strdel(&tmp);
 			format += i;
 		}
 		else
-			write(1, &*format, 1);
+			retint_putchar(*format);
 		format++;
 	}
 	va_end(ap);
-	return (0);
+	return (g_attr.ret);
 }
