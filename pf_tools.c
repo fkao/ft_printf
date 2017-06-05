@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 18:29:15 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/30 19:16:27 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/31 18:48:26 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int		pf_ismodifier(int c)
 		c == '.' || c == 'h' || c == 'l' || c == 'j' || c == 'z');
 }
 
-size_t	ft_countul_base(unsigned long nbr, size_t base)
+size_t	pf_countul_base(unsigned long nbr, size_t base)
 {
 	size_t	i;
 
@@ -42,7 +42,7 @@ size_t	ft_countul_base(unsigned long nbr, size_t base)
 	return (i);
 }
 
-char	*ft_ultoa_base(unsigned long value, size_t base)
+char	*pf_ultoa_base(unsigned long value, size_t base)
 {
 	char		*str;
 	char		*ptr;
@@ -50,7 +50,7 @@ char	*ft_ultoa_base(unsigned long value, size_t base)
 	const char	*t = "0123456789abcdef";
 	const char	*u = "0123456789ABCDEF";
 
-	len = ft_countul_base(value, base);
+	len = pf_countul_base(value, base);
 	str = ft_strnew(len);
 	if (value == 0)
 		*str = '0';
@@ -58,24 +58,29 @@ char	*ft_ultoa_base(unsigned long value, size_t base)
 	*ptr-- = '\0';
 	while (value)
 	{
-		*ptr = (g_attr.caps) ? u[value % base] : t[value % base];
+		*ptr = (g_at.caps) ? u[value % base] : t[value % base];
 		value /= base;
 		ptr--;
 	}
 	return (str);
 }
 
-void	pf_reset_attr(void)
+size_t	pf_wstrlen(wchar_t *str)
 {
-	g_attr.spec = 0;
-	g_attr.width = 0;
-	g_attr.space = 0;
-	g_attr.zero = 0;
-	g_attr.cross = 0;
-	g_attr.dash = 0;
-	g_attr.hash = 0;
-	g_attr.dot = 0;
-	g_attr.length = 0;
-	g_attr.count = 0;
-	g_attr.caps = 0;
+	size_t	len;
+
+	len = 0;
+	while (*str)
+	{
+		if (*str <= 0x7F)
+			len += 1;
+		else if (*str <= 0x7FF)
+			len += 2;
+		else if (*str <= 0xFFFF)
+			len += 3;
+		else if (*str <= 0x10FFFF)
+			len += 4;
+		str++;
+	}
+	return (len);
 }

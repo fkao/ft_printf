@@ -6,129 +6,129 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/11 19:00:56 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/30 19:40:15 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/31 18:56:31 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <unistd.h>
+#include <stdlib.h>
 
-void	pf_isolate_width(char *str)
+void	pf_isolate_width(char *fmt)
 {
-	while (*str)
+	while (*fmt)
 	{
-		if (pf_isspecifier(*str))
-			g_attr.spec = *str;
-		if (*str == '.')
+		if (pf_isspecifier(*fmt))
+			g_at.spec = *fmt;
+		if (*fmt == '.')
 		{
-			g_attr.dot = ft_isdigit(str[1]) ? ft_atoi(str + 1) : 0;
-			g_attr.prec = (g_attr.dot) ? 0 : 1;
-			str += ft_isdigit(str[1]) ? (ft_countint(g_attr.dot)) : 0;
+			g_at.prec = ft_isdigit(fmt[1]) ? ft_atoi(fmt + 1) : 0;
+			g_at.dot = (g_at.prec) ? 0 : 1;
+			fmt += ft_isdigit(fmt[1]) ? (ft_countint(g_at.prec)) : 0;
 		}
-		else if (*str > '0' && *str <= '9')
+		else if (*fmt > '0' && *fmt <= '9')
 		{
-			g_attr.width = ft_atoi(str);
-			str += (ft_countint(g_attr.width) - 1);
+			g_at.width = ft_atoi(fmt);
+			fmt += (ft_countint(g_at.width) - 1);
 		}
-		else if (*str == '0')
-			g_attr.zero = 1;
-		str++;
+		else if (*fmt == '0')
+			g_at.zero = 1;
+		fmt++;
 	}
-	if (g_attr.spec == 'i')
-		g_attr.spec = 'd';
+	if (g_at.spec == 'i')
+		g_at.spec = 'd';
 }
 
-void	pf_standardize_specs(char *str)
+void	pf_standardize_specs(char *fmt)
 {
-	pf_isolate_width(str);
-	if (ft_isupper(g_attr.spec))
+	pf_isolate_width(fmt);
+	if (ft_isupper(g_at.spec))
 	{
-		g_attr.spec = ft_tolower(g_attr.spec);
-		if (g_attr.spec == 'x')
-			g_attr.caps = 1;
+		g_at.spec = ft_tolower(g_at.spec);
+		if (g_at.spec == 'x')
+			g_at.caps = 1;
 		else
-			g_attr.length = 'l';
+			g_at.length = 'l';
 	}
-	if (g_attr.spec == 's' || g_attr.spec == 'c')
-		while (*str)
+	if (g_at.spec == 's' || g_at.spec == 'c')
+		while (*fmt)
 		{
-			if (*str == 'l')
+			if (*fmt == 'l')
 			{
-				if (str[1] == 'l')
-					str++;
+				if (fmt[1] == 'l')
+					fmt++;
 				else
-					g_attr.length = 'l';
+					g_at.length = 'l';
 			}
-			str++;
+			fmt++;
 		}
 }
 
-void	pf_parse_attributes(char *str)
+void	pf_parse_attributes(char *fmt)
 {
-	pf_standardize_specs(str);
-	while (*str)
+	pf_standardize_specs(fmt);
+	while (*fmt)
 	{
-		if (*str == ' ')
-			if (g_attr.spec == 'd')
-				g_attr.space = 1;
-		if (*str == '+')
-			if (g_attr.spec == 'd')
-				g_attr.cross = 1;
-		if (*str == '#')
-			if (g_attr.spec == 'o' || g_attr.spec == 'x')
-				g_attr.hash = 1;
-		if (*str == '-')
-			g_attr.dash = 1;
-		str++;
+		if (*fmt == ' ')
+			if (g_at.spec == 'd')
+				g_at.space = 1;
+		if (*fmt == '+')
+			if (g_at.spec == 'd')
+				g_at.cross = 1;
+		if (*fmt == '#')
+			if (g_at.spec == 'o' || g_at.spec == 'x')
+				g_at.hash = 1;
+		if (*fmt == '-')
+			g_at.dash = 1;
+		fmt++;
 	}
 }
 
-void	pf_organize_length(char *str)
+void	pf_organize_length(char *fmt)
 {
-	pf_parse_attributes(str);
-	while (*str && (g_attr.spec != 's' && g_attr.spec != 'c'))
+	pf_parse_attributes(fmt);
+	while (*fmt && (g_at.spec != 's' && g_at.spec != 'c'))
 	{
-		if (*str == 'l' || *str == 'j' || *str == 'z')
-			g_attr.length = 'l';
-		if (*str == 'h' && g_attr.length != 'l')
+		if (*fmt == 'l' || *fmt == 'j' || *fmt == 'z')
+			g_at.length = 'l';
+		if (*fmt == 'h' && g_at.length != 'l')
 		{
-			if (str[1] == 'h' && g_attr.length != 'h')
+			if (fmt[1] == 'h' && g_at.length != 'h')
 			{
-				g_attr.length = 'H';
-				str++;
+				g_at.length = 'H';
+				fmt++;
 			}
 			else
-				g_attr.length = 'h';
+				g_at.length = 'h';
 		}
-		str++;
+		fmt++;
 	}
 }
 
 void	pf_width_correction(void)
 {
-	if (g_attr.spec == 'd' || g_attr.spec == 'u')
+	if (g_at.spec == 'd' || g_at.spec == 'u')
 	{
-		if (g_attr.nbr < 0 || g_attr.cross || (g_attr.space && !g_attr.width))
-			g_attr.width -= 1;
+		if (g_at.nbr < 0 || g_at.cross || (g_at.space &&
+			(!g_at.width || g_at.zero)))
+			g_at.width -= 1;
 		pf_put_sign();
 	}
-	if (g_attr.spec == 'o' || g_attr.spec == 'x' || g_attr.spec == 'p')
+	if (g_at.spec == 'o' || g_at.spec == 'x' || g_at.spec == 'p')
 	{
-		if (g_attr.spec == 'o' && g_attr.hash && g_attr.unlo)
-			g_attr.width -= 1;
-		if ((g_attr.spec == 'x' && g_attr.hash && g_attr.unlo) ||
-			g_attr.spec == 'p')
-			g_attr.width -= 2;
+		if (g_at.spec == 'o' && g_at.hash && g_at.unlo)
+			g_at.width -= 1;
+		if ((g_at.spec == 'x' && g_at.hash && g_at.unlo) || g_at.spec == 'p')
+			g_at.width -= 2;
 		pf_put_hash();
 	}
-	if (g_attr.spec == 's' || g_attr.spec == 'c' || g_attr.spec == '%')
+	if (g_at.spec == 's' || g_at.spec == 'c' || g_at.spec == '%')
 	{
-		if (g_attr.dot && (g_attr.dot < g_attr.count) && g_attr.spec == 's')
+		if (g_at.prec && (g_at.prec < g_at.count) && g_at.spec == 's')
 		{
-			g_attr.count = g_attr.dot;
-			g_attr.str = ft_strsub(g_attr.str, 0, g_attr.dot);
+			g_at.count = g_at.prec;
+			g_at.out = ft_strsub(g_at.str, 0, g_at.prec);
 		}
-		g_attr.dot = 0;
+		g_at.prec = 0;
 		pf_put_width();
 	}
 }

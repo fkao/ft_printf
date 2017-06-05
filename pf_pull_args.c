@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/15 14:19:29 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/30 18:34:02 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/31 18:42:31 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,22 @@ void	pf_signed_conversion(va_list ap)
 	short	shrt;
 	char	hhd;
 
-	if (g_attr.spec == 'd')
+	if (g_at.spec == 'd')
 	{
-		if (g_attr.length == 'l')
-			g_attr.nbr = va_arg(ap, long);
-		else if (g_attr.length == 'h')
+		if (g_at.length == 'l')
+			g_at.nbr = va_arg(ap, long);
+		else if (g_at.length == 'h')
 		{
 			shrt = (short)va_arg(ap, int);
-			g_attr.nbr = (long)shrt;
+			g_at.nbr = (long)shrt;
 		}
-		else if (g_attr.length == 'H')
+		else if (g_at.length == 'H')
 		{
 			hhd = (char)va_arg(ap, int);
-			g_attr.nbr = (long)hhd;
+			g_at.nbr = (long)hhd;
 		}
-		else if (!g_attr.length)
-			g_attr.nbr = (long)va_arg(ap, int);
+		else if (!g_at.length)
+			g_at.nbr = (long)va_arg(ap, int);
 	}
 }
 
@@ -42,47 +42,57 @@ void	pf_unsigned_convs(va_list ap)
 	unsigned char	uchr;
 
 	pf_signed_conversion(ap);
-	if (g_attr.spec == 'o' || g_attr.spec == 'u' || g_attr.spec == 'x')
+	if (g_at.spec == 'o' || g_at.spec == 'u' || g_at.spec == 'x')
 	{
-		if (g_attr.length == 'l')
-			g_attr.unlo = (unsigned long)va_arg(ap, unsigned long);
-		else if (g_attr.length == 'h')
+		if (g_at.length == 'l')
+			g_at.unlo = (unsigned long)va_arg(ap, unsigned long);
+		else if (g_at.length == 'h')
 		{
 			unsh = (unsigned short)va_arg(ap, unsigned int);
-			g_attr.unlo = (unsigned long)unsh;
+			g_at.unlo = (unsigned long)unsh;
 		}
-		else if (g_attr.length == 'H')
+		else if (g_at.length == 'H')
 		{
 			uchr = (unsigned char)va_arg(ap, unsigned int);
-			g_attr.unlo = (unsigned long)uchr;
+			g_at.unlo = (unsigned long)uchr;
 		}
-		else if (!g_attr.length)
-			g_attr.unlo = (unsigned long)va_arg(ap, unsigned int);
+		else if (!g_at.length)
+			g_at.unlo = (unsigned long)va_arg(ap, unsigned int);
 	}
-	if (g_attr.spec == 'p')
-		g_attr.unlo = (unsigned long)va_arg(ap, void*);
+	if (g_at.spec == 'p')
+		g_at.unlo = (unsigned long)va_arg(ap, void*);
 }
 
 void	pf_wide_characters(va_list ap)
 {
 	wchar_t	*wstr;
-	wchar_t	*tmp;
 
 	wstr = va_arg(ap, wchar_t*);
-	tmp = wstr;
-	while (*tmp)
+	if (wstr == NULL)
 	{
-		if (*tmp <= 0x7F)
-			g_attr.count += 1;
-		else if (*tmp <= 0x7FF)
-			g_attr.count += 2;
-		else if (*tmp <= 0xFFFF)
-			g_attr.count += 3;
-		else if (*tmp <= 0x10FFFF)
-			g_attr.count += 4;
-		tmp++;
+		g_at.count = 5;
+		pf_width_correction();
+		retint_putstr("(null)");
+		pf_put_left();
+		return ;
 	}
+	g_at.count = pf_wstrlen(wstr);
 	pf_width_correction();
-	retint_putwstr(wstr, g_attr.count);
+	retint_putwstr(wstr, g_at.count);
 	pf_put_left();
+}
+
+void	pf_reset_attr(void)
+{
+	g_at.spec = 0;
+	g_at.width = 0;
+	g_at.space = 0;
+	g_at.zero = 0;
+	g_at.cross = 0;
+	g_at.dash = 0;
+	g_at.hash = 0;
+	g_at.dot = 0;
+	g_at.length = 0;
+	g_at.count = 0;
+	g_at.caps = 0;
 }

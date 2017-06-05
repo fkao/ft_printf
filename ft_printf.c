@@ -6,34 +6,35 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:12:30 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/30 19:45:52 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/31 19:04:12 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <unistd.h>
 #include <stdlib.h>
 
-t_attr	g_attr;
+t_attr	g_at;
 
 void	pf_print_unsigned(va_list ap)
 {
-	if (g_attr.spec == 'u')
-		g_attr.str = ft_ultoa_base(g_attr.unlo, 10);
-	if (g_attr.spec == 'o')
-		g_attr.str = ft_ultoa_base(g_attr.unlo, 8);
-	if (g_attr.spec == 'x' || g_attr.spec == 'p')
-		g_attr.str = ft_ultoa_base(g_attr.unlo, 16);
-	if (g_attr.spec == 's')
+	if (g_at.spec == 'u')
+		g_at.out = pf_ultoa_base(g_at.unlo, 10);
+	if (g_at.spec == 'o')
+		g_at.out = pf_ultoa_base(g_at.unlo, 8);
+	if (g_at.spec == 'x' || g_at.spec == 'p')
+		g_at.out = pf_ultoa_base(g_at.unlo, 16);
+	if (g_at.spec == 's')
 	{
-		g_attr.str = va_arg(ap, char*);
-		if (g_attr.str == NULL)
-			g_attr.str = "(null)";
+		g_at.str = (va_arg(ap, char*));
+		g_at.out = (g_at.str == NULL) ?
+			ft_strnew(5) : ft_strnew(ft_strlen(g_at.str));
+		g_at.out = (g_at.str == NULL) ? "(null)" : g_at.str;
 	}
-	g_attr.count = (g_attr.prec && !g_attr.nbr) ? 0 : ft_strlen(g_attr.str);
+	g_at.count = (g_at.dot && !g_at.unlo && g_at.spec != 's')
+		? 0 : ft_strlen(g_at.out);
 	pf_width_correction();
-	if (!g_attr.prec || g_attr.nbr)
-		retint_putstr(g_attr.str);
+	if (!g_at.dot || g_at.unlo || g_at.spec == 's')
+		retint_putstr(g_at.out);
 	pf_put_left();
 }
 
@@ -41,56 +42,58 @@ void	pf_print_singlechar(va_list ap)
 {
 	wchar_t	wchr;
 
-	if (g_attr.length == 'l' && g_attr.spec == 'c' && MB_CUR_MAX != 1)
+	if (g_at.length == 'l' && g_at.spec == 'c' && MB_CUR_MAX != 1)
 	{
 		wchr = (wchar_t)va_arg(ap, wint_t);
 		if (wchr <= 0x7F)
-			g_attr.count = 1;
+			g_at.count = 1;
 		else if (wchr <= 0x7FF)
-			g_attr.count = 2;
+			g_at.count = 2;
 		else if (wchr <= 0xFFFF)
-			g_attr.count = 3;
+			g_at.count = 3;
 		else if (wchr <= 0x10FFFF)
-			g_attr.count = 4;
+			g_at.count = 4;
 	}
 	else
 	{
-		if (g_attr.spec == 'c')
+		if (g_at.spec == 'c')
 			wchr = (char)va_arg(ap, int);
-		if (g_attr.spec == '%')
+		if (g_at.spec == '%')
 			wchr = '%';
-		g_attr.count = 1;
+		g_at.count = 1;
 	}
 	pf_width_correction();
 	retint_putwchar(wchr);
 	pf_put_left();
 }
 
-void	pf_print_specifiers(char *fmt, va_list ap)
+void	pf_branch_specifiers(va_list ap)
 {
-	pf_organize_length(fmt);
 	pf_unsigned_convs(ap);
-	if (g_attr.spec == 's')
+	if (g_at.spec == 's')
 	{
-		if (g_attr.length != 'l')
+		if (g_at.length != 'l')
 			pf_print_unsigned(ap);
-		if (g_attr.length == 'l')
+		if (g_at.length == 'l')
 			pf_wide_characters(ap);
 	}
-	if (g_attr.spec == 'd')
+	if (g_at.spec == 'd')
 	{
-		g_attr.count = (g_attr.prec && !g_attr.nbr) ? 0 :
-			(int)ft_countul_base(ft_toabsl(g_attr.nbr), 10);
+		g_at.count = (g_at.dot && !g_at.nbr) ? 0 :
+			(int)pf_countul_base(ft_toabsl(g_at.nbr), 10);
 		pf_width_correction();
-		if (!g_attr.prec || g_attr.nbr)
-			retint_putnbrul(ft_toabsl(g_attr.nbr));
+		if (!g_at.dot || g_at.nbr)
+			retint_putnbrul(ft_toabsl(g_at.nbr));
 		pf_put_left();
 	}
-	if (g_attr.spec == '%' || g_attr.spec == 'c')
+	if (g_at.spec == '%' || g_at.spec == 'c')
 		pf_print_singlechar(ap);
-	if (g_attr.spec == 'u' || g_attr.spec == 'o' || g_attr.spec == 'x' ||
-		g_attr.spec == 'p')
+	if (g_at.spec == 'u' || g_at.spec == 'o' || g_at.spec == 'x' ||
+		g_at.spec == 'p')
+	{
 		pf_print_unsigned(ap);
+		ft_strdel(&g_at.out);
+	}
 }
 
 void	pf_print_nospec(char *fmt, va_list ap)
@@ -98,10 +101,10 @@ void	pf_print_nospec(char *fmt, va_list ap)
 	char	c;
 	int		i;
 
-	pf_print_specifiers(fmt, ap);
-	if (!g_attr.spec)
+	pf_organize_length(fmt);
+	if (!g_at.spec)
 	{
-		c = (g_attr.zero) ? '0' : ' ';
+		c = (g_at.zero) ? '0' : ' ';
 		while (*fmt)
 		{
 			if (!pf_ismodifier(*fmt))
@@ -109,14 +112,16 @@ void	pf_print_nospec(char *fmt, va_list ap)
 			fmt++;
 		}
 		i = 0;
-		if ((g_attr.width > 0) && !g_attr.dash)
-			while (i++ < (g_attr.width - 1))
+		if ((g_at.width > 0) && !g_at.dash)
+			while (i++ < (g_at.width - 1))
 				retint_putchar(c);
 		retint_putchar(*fmt);
-		if ((g_attr.width > 0) && g_attr.dash)
-			while (i++ < (g_attr.width - 1))
+		if ((g_at.width > 0) && g_at.dash)
+			while (i++ < (g_at.width - 1))
 				retint_putchar(' ');
 	}
+	else
+		pf_branch_specifiers(ap);
 }
 
 int		ft_printf(const char *format, ...)
@@ -126,18 +131,18 @@ int		ft_printf(const char *format, ...)
 	char	*tmp;
 
 	va_start(ap, format);
-	g_attr.ret = 0;
+	g_at.ret = 0;
 	while (*format)
 	{
 		if (*format == '%')
 		{
-			format++;
 			pf_reset_attr();
-			i = 0;
+			i = 1;
 			while (pf_ismodifier(format[i]))
 				i++;
-			tmp = ft_strsub(format, 0, i + 1);
+			tmp = ft_strsub(format, 1, i);
 			pf_print_nospec(tmp, ap);
+			ft_strdel(&tmp);
 			format += i;
 		}
 		else
@@ -145,5 +150,5 @@ int		ft_printf(const char *format, ...)
 		format++;
 	}
 	va_end(ap);
-	return (g_attr.ret);
+	return ((int)g_at.ret);
 }

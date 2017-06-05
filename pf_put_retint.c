@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 13:45:40 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/30 18:37:27 by fkao             ###   ########.fr       */
+/*   Updated: 2017/05/31 18:05:46 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 void	retint_putchar(char c)
 {
 	write(1, &c, 1);
-	g_attr.ret += 1;
+	g_at.ret += 1;
 }
 
 void	retint_putstr(char *s)
 {
 	write(1, s, ft_strlen(s));
-	g_attr.ret += ft_strlen(s);
+	g_at.ret += ft_strlen(s);
 }
 
 void	retint_putwchar(wchar_t chr)

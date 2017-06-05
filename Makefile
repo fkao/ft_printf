@@ -6,7 +6,7 @@
 #    By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/08 12:21:04 by fkao              #+#    #+#              #
-#    Updated: 2017/05/24 15:05:43 by fkao             ###   ########.fr        #
+#    Updated: 2017/05/31 17:56:32 by fkao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,11 +24,11 @@ SFILE	= ft_printf.c \
 SRC		= $(addprefix $(SDIR), $(SFILE))
 SDIR	= ./
 
-LFILE	= ft_atoi.c ft_countint.c ft_isdigit.c ft_isupper.c ft_memalloc.c \
-			ft_putchar.c ft_putstr.c ft_strlen.c ft_strnew.c ft_strsub.c \
-			ft_toabsl.c ft_tolower.c ft_toupper.c ft_bzero.c ft_isspace.c \
-			ft_putchar_fd.c ft_putstr_fd.c ft_strncpy.c ft_memset.c \
-			ft_memdel.c ft_strdel.c
+LFILE	= ft_atoi.c ft_isspace.c ft_countint.c ft_isdigit.c ft_isupper.c \
+			ft_strdel.c ft_memdel.c ft_strlen.c ft_strnew.c ft_memalloc.c \
+			ft_bzero.c ft_memset.c ft_strsub.c ft_strncpy.c ft_toabsl.c \
+			ft_tolower.c
+
 LIB		= $(addprefix $(LDIR), $(LFILE))
 LDIR	= ./libft/
 
@@ -41,6 +41,9 @@ RM		= rm -rf
 
 all: $(NAME)
 
+lib:
+	@make -C $(LDIR)
+
 $(ODIR):
 	@mkdir -p $(ODIR)
 	@gcc -c $(FLAG) $(SRC) $(LIB) $(INCL)
@@ -52,8 +55,10 @@ $(NAME): $(ODIR)
 
 clean:
 	@$(RM) $(ODIR)
+	@$(RM) $(LDIR)$(ODIR)
 
 fclean: clean
 	@$(RM) $(NAME)
+	@$(RM) $(LDIR)libft.a
 
 re: fclean all
