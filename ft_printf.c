@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:12:30 by fkao              #+#    #+#             */
-/*   Updated: 2017/06/05 17:08:42 by fkao             ###   ########.fr       */
+/*   Updated: 2017/06/05 18:00:31 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	pf_reset_attr(void)
 	g_at.length = 0;
 	g_at.count = 0;
 	g_at.caps = 0;
+	g_at.nbr = 0;
+	g_at.unlo = 0;
 }
 
 void	pf_branch_specifiers(va_list ap)

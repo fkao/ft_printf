@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/11 19:00:56 by fkao              #+#    #+#             */
-/*   Updated: 2017/06/05 16:54:18 by fkao             ###   ########.fr       */
+/*   Updated: 2017/06/05 18:08:58 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ void	pf_width_correction(void)
 	if (g_at.spec == 'o' || g_at.spec == 'x' || g_at.spec == 'p')
 	{
 		if (g_at.spec == 'o' && g_at.hash && g_at.unlo)
-			g_at.width -= 1;
+			g_at.count += 1;
 		if ((g_at.spec == 'x' && g_at.hash && g_at.unlo) || g_at.spec == 'p')
 			g_at.width -= 2;
 		pf_put_hash();
