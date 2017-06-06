@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 18:29:15 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/31 18:48:26 by fkao             ###   ########.fr       */
+/*   Updated: 2017/06/05 15:13:26 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int		pf_isspecifier(int c)
 int		pf_ismodifier(int c)
 {
 	return (ft_isdigit(c) || c == ' ' || c == '+' || c == '-' || c == '#' ||
-		c == '.' || c == 'h' || c == 'l' || c == 'j' || c == 'z');
+		c == '.' || c == 'h' || c == 'l' || c == 'j' || c == 'z' || c == '*');
 }
 
 size_t	pf_countul_base(unsigned long nbr, size_t base)

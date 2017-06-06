@@ -6,13 +6,14 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/15 14:19:29 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/31 18:42:31 by fkao             ###   ########.fr       */
+/*   Updated: 2017/06/05 17:04:54 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include <stdlib.h>
 
-void	pf_signed_conversion(va_list ap)
+void	pf_signed_conversions(va_list ap)
 {
 	short	shrt;
 	char	hhd;
@@ -36,12 +37,12 @@ void	pf_signed_conversion(va_list ap)
 	}
 }
 
-void	pf_unsigned_convs(va_list ap)
+void	pf_get_args(va_list ap)
 {
 	unsigned short	unsh;
 	unsigned char	uchr;
 
-	pf_signed_conversion(ap);
+	pf_signed_conversions(ap);
 	if (g_at.spec == 'o' || g_at.spec == 'u' || g_at.spec == 'x')
 	{
 		if (g_at.length == 'l')
@@ -82,17 +83,53 @@ void	pf_wide_characters(va_list ap)
 	pf_put_left();
 }
 
-void	pf_reset_attr(void)
+void	pf_print_unsigned(va_list ap)
 {
-	g_at.spec = 0;
-	g_at.width = 0;
-	g_at.space = 0;
-	g_at.zero = 0;
-	g_at.cross = 0;
-	g_at.dash = 0;
-	g_at.hash = 0;
-	g_at.dot = 0;
-	g_at.length = 0;
-	g_at.count = 0;
-	g_at.caps = 0;
+	if (g_at.spec == 'u')
+		g_at.out = pf_ultoa_base(g_at.unlo, 10);
+	if (g_at.spec == 'o')
+		g_at.out = pf_ultoa_base(g_at.unlo, 8);
+	if (g_at.spec == 'x' || g_at.spec == 'p')
+		g_at.out = pf_ultoa_base(g_at.unlo, 16);
+	if (g_at.spec == 's')
+	{
+		g_at.out = (va_arg(ap, char*));
+		if (g_at.out == NULL && !g_at.dot)
+			g_at.out = "(null)";
+		else if (g_at.out == NULL && g_at.dot)
+			g_at.out = "0";
+	}
+	g_at.count = (g_at.dot && !g_at.unlo && g_at.spec != 's')
+		? 0 : ft_strlen(g_at.out);
+	pf_width_correction();
+	if (!g_at.dot || g_at.unlo || g_at.spec == 's')
+		retint_putstr(g_at.out);
+	pf_put_left();
+}
+
+void	pf_print_singlechar(va_list ap)
+{
+	wchar_t	wchr;
+
+	if (g_at.length == 'l' && g_at.spec == 'c' && MB_CUR_MAX != 1)
+	{
+		wchr = (wchar_t)va_arg(ap, wint_t);
+		if (wchr <= 0x7F)
+			g_at.count = 1;
+		else if (wchr <= 0x7FF)
+			g_at.count = 2;
+		else if (wchr <= 0xFFFF)
+			g_at.count = 3;
+		else if (wchr <= 0x10FFFF)
+			g_at.count = 4;
+	}
+	else
+	{
+		wchr = (g_at.spec == 'c') ? (char)va_arg(ap, int) : '%';
+		g_at.count = 1;
+	}
+	g_at.prec = 0;
+	pf_put_width();
+	retint_putwchar(wchr);
+	pf_put_left();
 }

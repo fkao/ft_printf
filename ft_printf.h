@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:05:46 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/31 18:43:40 by fkao             ###   ########.fr       */
+/*   Updated: 2017/06/05 16:59:21 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 
 typedef struct		s_attr
 {
-	char			*str;
 	char			*out;
 	char			spec;
 	size_t			ret;
@@ -33,20 +32,23 @@ typedef struct		s_attr
 	int				length;
 	int				count;
 	int				caps;
+	int				cut;
 	long			nbr;
 	unsigned long	unlo;
 }					t_attr;
 
 int					ft_printf(const char *format, ...);
 extern t_attr		g_at;
+void				pf_print_unsigned(va_list ap);
+void				pf_print_singlechar(va_list ap);
 int					pf_ismodifier(int c);
 int					pf_isspecifier(int c);
-void				pf_signed_conversion(va_list ap);
-void				pf_unsigned_convs(va_list ap);
-void				pf_isolate_width(char *fmt);
-void				pf_standardize_specs(char *fmt);
-void				pf_parse_attributes(char *fmt);
-void				pf_organize_length(char *fmt);
+void				pf_signed_conversions(va_list ap);
+void				pf_get_args(va_list ap);
+void				pf_isolate_width(char *fmt, va_list ap);
+void				pf_standardize_specs(char *fmt, va_list ap);
+void				pf_parse_attributes(char *fmt, va_list ap);
+void				pf_organize_length(char *fmt, va_list ap);
 void				pf_width_correction(void);
 void				pf_wide_characters(va_list ap);
 void				pf_put_sign(void);
@@ -63,4 +65,6 @@ void				retint_putwchar(wchar_t chr);
 void				retint_putwstr(wchar_t *str, size_t len);
 void				retint_putnbrul(unsigned long n);
 void				pf_reset_attr(void);
+void				pf_handle_wild(va_list ap);
+void				pf_wild_precision(va_list ap);
 #endif

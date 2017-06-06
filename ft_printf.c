@@ -6,70 +6,33 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:12:30 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/31 19:04:12 by fkao             ###   ########.fr       */
+/*   Updated: 2017/06/05 17:08:42 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdlib.h>
 
 t_attr	g_at;
 
-void	pf_print_unsigned(va_list ap)
+void	pf_reset_attr(void)
 {
-	if (g_at.spec == 'u')
-		g_at.out = pf_ultoa_base(g_at.unlo, 10);
-	if (g_at.spec == 'o')
-		g_at.out = pf_ultoa_base(g_at.unlo, 8);
-	if (g_at.spec == 'x' || g_at.spec == 'p')
-		g_at.out = pf_ultoa_base(g_at.unlo, 16);
-	if (g_at.spec == 's')
-	{
-		g_at.str = (va_arg(ap, char*));
-		g_at.out = (g_at.str == NULL) ?
-			ft_strnew(5) : ft_strnew(ft_strlen(g_at.str));
-		g_at.out = (g_at.str == NULL) ? "(null)" : g_at.str;
-	}
-	g_at.count = (g_at.dot && !g_at.unlo && g_at.spec != 's')
-		? 0 : ft_strlen(g_at.out);
-	pf_width_correction();
-	if (!g_at.dot || g_at.unlo || g_at.spec == 's')
-		retint_putstr(g_at.out);
-	pf_put_left();
-}
-
-void	pf_print_singlechar(va_list ap)
-{
-	wchar_t	wchr;
-
-	if (g_at.length == 'l' && g_at.spec == 'c' && MB_CUR_MAX != 1)
-	{
-		wchr = (wchar_t)va_arg(ap, wint_t);
-		if (wchr <= 0x7F)
-			g_at.count = 1;
-		else if (wchr <= 0x7FF)
-			g_at.count = 2;
-		else if (wchr <= 0xFFFF)
-			g_at.count = 3;
-		else if (wchr <= 0x10FFFF)
-			g_at.count = 4;
-	}
-	else
-	{
-		if (g_at.spec == 'c')
-			wchr = (char)va_arg(ap, int);
-		if (g_at.spec == '%')
-			wchr = '%';
-		g_at.count = 1;
-	}
-	pf_width_correction();
-	retint_putwchar(wchr);
-	pf_put_left();
+	g_at.spec = 0;
+	g_at.width = 0;
+	g_at.space = 0;
+	g_at.zero = 0;
+	g_at.cross = 0;
+	g_at.dash = 0;
+	g_at.hash = 0;
+	g_at.dot = 0;
+	g_at.prec = 0;
+	g_at.length = 0;
+	g_at.count = 0;
+	g_at.caps = 0;
 }
 
 void	pf_branch_specifiers(va_list ap)
 {
-	pf_unsigned_convs(ap);
+	pf_get_args(ap);
 	if (g_at.spec == 's')
 	{
 		if (g_at.length != 'l')
@@ -101,7 +64,7 @@ void	pf_print_nospec(char *fmt, va_list ap)
 	char	c;
 	int		i;
 
-	pf_organize_length(fmt);
+	pf_organize_length(fmt, ap);
 	if (!g_at.spec)
 	{
 		c = (g_at.zero) ? '0' : ' ';
@@ -124,31 +87,42 @@ void	pf_print_nospec(char *fmt, va_list ap)
 		pf_branch_specifiers(ap);
 }
 
+void	pf_brake_format(const char *fmt, va_list ap)
+{
+	size_t	index;
+	char	*tmp;
+
+	while (*fmt)
+	{
+		if (*fmt == '%')
+		{
+			pf_reset_attr();
+			index = 1;
+			while (pf_ismodifier(fmt[index]))
+				index++;
+			tmp = ft_strsub(fmt, 1, index);
+			if (!*tmp || (!ft_isprint(*(fmt + index))))
+			{
+				ft_strdel(&tmp);
+				return ;
+			}
+			pf_print_nospec(tmp, ap);
+			ft_strdel(&tmp);
+			fmt += index;
+		}
+		else
+			retint_putchar(*fmt);
+		fmt++;
+	}
+}
+
 int		ft_printf(const char *format, ...)
 {
 	va_list	ap;
-	size_t	i;
-	char	*tmp;
 
 	va_start(ap, format);
 	g_at.ret = 0;
-	while (*format)
-	{
-		if (*format == '%')
-		{
-			pf_reset_attr();
-			i = 1;
-			while (pf_ismodifier(format[i]))
-				i++;
-			tmp = ft_strsub(format, 1, i);
-			pf_print_nospec(tmp, ap);
-			ft_strdel(&tmp);
-			format += i;
-		}
-		else
-			retint_putchar(*format);
-		format++;
-	}
+	pf_brake_format(format, ap);
 	va_end(ap);
 	return ((int)g_at.ret);
 }

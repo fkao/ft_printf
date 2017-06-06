@@ -6,14 +6,14 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/11 19:00:56 by fkao              #+#    #+#             */
-/*   Updated: 2017/05/31 18:56:31 by fkao             ###   ########.fr       */
+/*   Updated: 2017/06/05 16:54:18 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include <stdlib.h>
 
-void	pf_isolate_width(char *fmt)
+void	pf_isolate_width(char *fmt, va_list ap)
 {
 	while (*fmt)
 	{
@@ -21,26 +21,28 @@ void	pf_isolate_width(char *fmt)
 			g_at.spec = *fmt;
 		if (*fmt == '.')
 		{
+			g_at.dot = 1;
 			g_at.prec = ft_isdigit(fmt[1]) ? ft_atoi(fmt + 1) : 0;
-			g_at.dot = (g_at.prec) ? 0 : 1;
 			fmt += ft_isdigit(fmt[1]) ? (ft_countint(g_at.prec)) : 0;
+			(fmt[1] == '*') ? pf_wild_precision(ap) : 0;
+			(fmt[1] == '*') ? fmt++ : 0;
 		}
 		else if (*fmt > '0' && *fmt <= '9')
 		{
 			g_at.width = ft_atoi(fmt);
 			fmt += (ft_countint(g_at.width) - 1);
 		}
+		else if (*fmt == '*')
+			pf_handle_wild(ap);
 		else if (*fmt == '0')
 			g_at.zero = 1;
 		fmt++;
 	}
-	if (g_at.spec == 'i')
-		g_at.spec = 'd';
 }
 
-void	pf_standardize_specs(char *fmt)
+void	pf_standardize_specs(char *fmt, va_list ap)
 {
-	pf_isolate_width(fmt);
+	pf_isolate_width(fmt, ap);
 	if (ft_isupper(g_at.spec))
 	{
 		g_at.spec = ft_tolower(g_at.spec);
@@ -49,6 +51,8 @@ void	pf_standardize_specs(char *fmt)
 		else
 			g_at.length = 'l';
 	}
+	if (g_at.spec == 'i')
+		g_at.spec = 'd';
 	if (g_at.spec == 's' || g_at.spec == 'c')
 		while (*fmt)
 		{
@@ -63,9 +67,9 @@ void	pf_standardize_specs(char *fmt)
 		}
 }
 
-void	pf_parse_attributes(char *fmt)
+void	pf_parse_attributes(char *fmt, va_list ap)
 {
-	pf_standardize_specs(fmt);
+	pf_standardize_specs(fmt, ap);
 	while (*fmt)
 	{
 		if (*fmt == ' ')
@@ -83,9 +87,9 @@ void	pf_parse_attributes(char *fmt)
 	}
 }
 
-void	pf_organize_length(char *fmt)
+void	pf_organize_length(char *fmt, va_list ap)
 {
-	pf_parse_attributes(fmt);
+	pf_parse_attributes(fmt, ap);
 	while (*fmt && (g_at.spec != 's' && g_at.spec != 'c'))
 	{
 		if (*fmt == 'l' || *fmt == 'j' || *fmt == 'z')
@@ -121,12 +125,12 @@ void	pf_width_correction(void)
 			g_at.width -= 2;
 		pf_put_hash();
 	}
-	if (g_at.spec == 's' || g_at.spec == 'c' || g_at.spec == '%')
+	if (g_at.spec == 's')
 	{
-		if (g_at.prec && (g_at.prec < g_at.count) && g_at.spec == 's')
+		if ((g_at.prec || g_at.dot) && (g_at.prec < g_at.count))
 		{
 			g_at.count = g_at.prec;
-			g_at.out = ft_strsub(g_at.str, 0, g_at.prec);
+			g_at.out = ft_strsub(g_at.out, 0, g_at.prec);
 		}
 		g_at.prec = 0;
 		pf_put_width();
