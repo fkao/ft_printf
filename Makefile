@@ -6,7 +6,7 @@
 #    By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/08 12:21:04 by fkao              #+#    #+#              #
-#    Updated: 2017/06/05 15:38:54 by fkao             ###   ########.fr        #
+#    Updated: 2017/06/21 18:47:23 by fkao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ SFILE	= ft_printf.c \
 SRC		= $(addprefix $(SDIR), $(SFILE))
 SDIR	= ./
 
-LFILE	= ft_atoi.c ft_isspace.c ft_countint.c ft_isdigit.c ft_isupper.c \
+LFILE	= ft_atoi.c ft_isspace.c ft_intlen.c ft_isdigit.c ft_isupper.c \
 			ft_strdel.c ft_memdel.c ft_strlen.c ft_strnew.c ft_memalloc.c \
 			ft_bzero.c ft_memset.c ft_strsub.c ft_strncpy.c ft_toabsl.c \
 			ft_tolower.c ft_isprint.c

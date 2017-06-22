@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:12:30 by fkao              #+#    #+#             */
-/*   Updated: 2017/06/05 18:00:31 by fkao             ###   ########.fr       */
+/*   Updated: 2017/06/21 18:47:04 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	pf_branch_specifiers(va_list ap)
 	if (g_at.spec == 'd')
 	{
 		g_at.count = (g_at.dot && !g_at.nbr) ? 0 :
-			(int)pf_countul_base(ft_toabsl(g_at.nbr), 10);
+			(int)pf_ullen_base(ft_toabsl(g_at.nbr), 10);
 		pf_width_correction();
 		if (!g_at.dot || g_at.nbr)
 			retint_putnbrul(ft_toabsl(g_at.nbr));

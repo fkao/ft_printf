@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 18:29:15 by fkao              #+#    #+#             */
-/*   Updated: 2017/06/05 15:13:26 by fkao             ###   ########.fr       */
+/*   Updated: 2017/06/21 18:48:09 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int		pf_ismodifier(int c)
 		c == '.' || c == 'h' || c == 'l' || c == 'j' || c == 'z' || c == '*');
 }
 
-size_t	pf_countul_base(unsigned long nbr, size_t base)
+size_t	pf_ullen_base(unsigned long nbr, size_t base)
 {
 	size_t	i;
 
@@ -50,7 +50,7 @@ char	*pf_ultoa_base(unsigned long value, size_t base)
 	const char	*t = "0123456789abcdef";
 	const char	*u = "0123456789ABCDEF";
 
-	len = pf_countul_base(value, base);
+	len = pf_ullen_base(value, base);
 	str = ft_strnew(len);
 	if (value == 0)
 		*str = '0';

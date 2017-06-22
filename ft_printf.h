@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/09 11:05:46 by fkao              #+#    #+#             */
-/*   Updated: 2017/06/05 17:47:17 by fkao             ###   ########.fr       */
+/*   Updated: 2017/06/21 18:47:13 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void				pf_put_width(void);
 void				pf_put_dot(void);
 void				pf_put_left(void);
 char				*pf_ultoa_base(unsigned long value, size_t base);
-size_t				pf_countul_base(unsigned long nbr, size_t base);
+size_t				pf_ullen_base(unsigned long nbr, size_t base);
 size_t				pf_wstrlen(wchar_t *str);
 void				retint_putchar(char c);
 void				retint_putstr(char *s);
