@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fkao <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/06 14:01:33 by fkao              #+#    #+#             */
-/*   Updated: 2017/03/06 19:21:30 by fkao             ###   ########.fr       */
+/*   Updated: 2017/06/21 18:35:55 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,14 @@ char			*ft_itoa(int n)
 	size_t		len;
 	long		nbr;
 
-	nbr = (long)n;
-	len = ft_intlen(nbr);
+	len = ft_intlen(n);
 	str = ft_strnew(len);
 	if (str)
 	{
-		ptr = str + len - 1;
-		if (nbr < 0)
-		{
+		if (n < 0)
 			*str = '-';
-			nbr *= -1;
-		}
+		nbr = ft_toabsl(n);
+		ptr = str + len - 1;
 		while (nbr > 9)
 		{
 			*ptr-- = '0' + (nbr % 10);
