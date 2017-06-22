@@ -1,41 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_itoa.c                                          :+:      :+:    :+:   */
+/*   ft_lstlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fkao <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/03/06 14:01:33 by fkao              #+#    #+#             */
-/*   Updated: 2017/03/06 19:21:30 by fkao             ###   ########.fr       */
+/*   Created: 2017/03/26 12:34:30 by fkao              #+#    #+#             */
+/*   Updated: 2017/03/26 12:34:30 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char			*ft_itoa(int n)
+size_t	ft_lstlen(t_list *lst)
 {
-	char		*str;
-	char		*ptr;
-	size_t		len;
-	long		nbr;
+	size_t	len;
 
-	nbr = (long)n;
-	len = ft_intlen(nbr);
-	str = ft_strnew(len);
-	if (str)
+	len = 0;
+	while (lst != NULL)
 	{
-		ptr = str + len - 1;
-		if (nbr < 0)
-		{
-			*str = '-';
-			nbr *= -1;
-		}
-		while (nbr > 9)
-		{
-			*ptr-- = '0' + (nbr % 10);
-			nbr /= 10;
-		}
-		*ptr = '0' + nbr;
+		lst = lst->next;
+		len++;
 	}
-	return (str);
+	return (len);
 }

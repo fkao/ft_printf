@@ -33,9 +33,9 @@ unsigned long		ft_toabsl(long n);
 /*
 ** 	count
 */
-size_t				ft_countint(int n);
-size_t				ft_countuli(unsigned long n);
-size_t				ft_countlst(t_list *lst);
+size_t				ft_intlen(int n);
+size_t				ft_lstlen(t_list *lst);
+size_t				ft_strlen(const char *str);
 size_t				ft_countstr(char const *s, char c);
 
 /*
@@ -76,7 +76,6 @@ int					ft_strncmp(const char *s1, const char *s2, size_t n);
 char				*ft_strcpy(char *dst, const char *src);
 char				*ft_strncpy(char *dst, const char *src, size_t n);
 char				*ft_strdup(const char *src);
-size_t				ft_strlen(const char *str);
 char				*ft_strstr(const char *big, const char *little);
 char				*ft_strnstr(const char *big, const char *little, size_t n);
 
