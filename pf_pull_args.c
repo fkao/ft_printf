@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/15 14:19:29 by fkao              #+#    #+#             */
-/*   Updated: 2017/06/05 17:50:53 by fkao             ###   ########.fr       */
+/*   Updated: 2017/06/21 17:07:13 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	pf_print_unsigned(va_list ap)
 	if (g_at.spec == 's')
 	{
 		g_at.out = (va_arg(ap, char*));
-		if (g_at.out == NULL && !g_at.dot)
+		if (g_at.out == NULL)
 			g_at.out = "(null)";
 		else if (g_at.out == NULL && g_at.dot)
 			g_at.out = "0";
