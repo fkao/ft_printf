@@ -6,7 +6,7 @@
 /*   By: fkao <fkao@student.42.us.org>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/11 19:00:56 by fkao              #+#    #+#             */
-/*   Updated: 2017/06/21 18:47:47 by fkao             ###   ########.fr       */
+/*   Updated: 2017/06/27 12:21:19 by fkao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	pf_isolate_width(char *fmt, va_list ap)
 		if (*fmt == '.')
 		{
 			g_at.dot = 1;
+			while (fmt[1] == '0')
+				fmt++;
 			g_at.prec = ft_isdigit(fmt[1]) ? ft_atoi(fmt + 1) : 0;
 			fmt += ft_isdigit(fmt[1]) ? (ft_intlen(g_at.prec)) : 0;
 			(fmt[1] == '*') ? pf_wild_precision(ap) : 0;
